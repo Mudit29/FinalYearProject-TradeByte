@@ -1,0 +1,168 @@
+<section class="w-full min-h-screen">
+  <div class="form max-w-sm mx-auto mt-6" style="min-width: 300px">
+    <h2 class="text-gray-800 text-center text-4xl lg:text-5xl font-semibold">
+      TradeByte
+    </h2>
+    <div class="flex flex-col shadow-lg rounded-lg bg-white mx-2 mt-4">
+      <div
+        class="rounded-t mb-0 px-6 py-3 text-lg font-bold w-full flex justify-center items-center flex-col"
+      >
+        <p>Sign Up for&nbsp; <a href="/" class="text-blue-700">TradeByte</a></p>
+        <%- include('./partials/_messages') %>
+      </div>
+      <div class="flex-auto px-4 lg:px-10 py-8 pt-0">
+        <form method="POST" action="/user/signup">
+          <div class="relative flex items-center justify-center w-full mb-3">
+            <div class="relative w-1/2 mr-1">
+              <label
+                class="block uppercase text-gray-700 text-xs font-bold mb-2"
+                for="grid-password"
+                >First Name</label
+              >
+              <input
+                type="text"
+                required
+                value="<%= typeof firstName != 'undefined' ? firstName : '' %>"
+                class="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full"
+                name="firstName"
+                placeholder="First Name"
+                style="transition: all 0.15s ease 0s"
+              />
+            </div>
+            <div class="relative w-1/2 ml-1">
+              <label
+                class="block uppercase text-gray-700 text-xs font-bold mb-2"
+                for="grid-password"
+                >Last Name</label
+              >
+              <input
+                type="text"
+                required
+                name="lastName"
+                value="<%= typeof lastName != 'undefined' ? lastName : '' %>"
+                class="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full"
+                placeholder="Last Name"
+                style="transition: all 0.15s ease 0s"
+              />
+            </div>
+          </div>
+          <div class="relative w-full mb-3">
+            <label
+              class="block uppercase text-gray-700 text-xs font-bold mb-2"
+              for="grid-password"
+              >Email</label
+            >
+            <input
+              type="email"
+              name="email"
+              value="<%= typeof email != 'undefined' ? email : '' %>"
+              class="px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full"
+              placeholder="Email"
+              style="transition: all 0.15s ease 0s"
+              required
+            />
+          </div>
+          <div class="relative w-full mb-3">
+            <label
+              class="block uppercase text-gray-700 text-xs font-bold mb-2"
+              for="grid-password"
+              >Password</label
+            >
+            <input
+              type="password"
+              name="password1"
+              value="<%= typeof password1 != 'undefined' ? password1 : '' %>"
+              class="password1 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full"
+              placeholder="Password"
+              style="transition: all 0.15s ease 0s"
+              pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{6,13}$"
+              required
+            />
+            <p class="password-pattern text-xs mt-2 text-gray-700">
+              Password must be 6 to 13 characters long which should contain one
+              lower case letter, one upper case letter, one digit, and no
+              spaces.
+            </p>
+          </div>
+          <div class="relative w-full mb-3">
+            <label
+              class="block uppercase text-gray-700 text-xs font-bold mb-2"
+              for="grid-password"
+              >Enter your Password again</label
+            >
+            <input
+              type="password"
+              name="password2"
+              value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
+              class="password2 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full"
+              placeholder="Password"
+              style="transition: all 0.15s ease 0s"
+              required
+            />
+            <p
+              class="password-match text-xs mt-2 text-red-700 hidden font-semibold"
+            >
+              Password do not match
+            </p>
+          </div>
+          <div class="text-center mt-4">
+            <button
+              class="bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full"
+              type="submit"
+              style="transition: all 0.15s ease 0s"
+            >
+              Sign Up
+            </button>
+            <p class="mt-2">
+              Go back to <a href="/" class="text-red-600">Login</a>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JavaScript -->
+
+<script>
+  const password1 = document.querySelector(".password1");
+  const password2 = document.querySelector(".password2");
+  const pattern = document.querySelector(".password-pattern");
+  const passwordMatch = document.querySelector(".password-match");
+  const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{6,13}$/;
+
+  password1.addEventListener("input", (e) => {
+    e.preventDefault();
+    if (regex.test(e.target.value)) {
+      pattern.classList.add("text-green-700");
+      pattern.classList.add("font-semibold");
+    } else {
+      pattern.classList.remove("text-green-700");
+      pattern.classList.add("text-red-700");
+    }
+
+    if (password2.value.length > 0 && e.target.value !== password2.value) {
+      passwordMatch.classList.remove("text-green-700");
+      passwordMatch.classList.add("text-red-700");
+      passwordMatch.textContent = "Password do not match";
+    } else {
+      passwordMatch.textContent = "Password match";
+      passwordMatch.classList.remove("text-red-700");
+      passwordMatch.classList.add("text-green-700");
+    }
+  });
+
+  password2.addEventListener("input", (e) => {
+    e.preventDefault();
+    if (e.target.value !== password1.value) {
+      passwordMatch.classList.remove("hidden");
+      passwordMatch.textContent = "Password do not match";
+      passwordMatch.classList.remove("text-green-700");
+      passwordMatch.classList.add("text-red-700");
+    } else {
+      passwordMatch.textContent = "Password match";
+      passwordMatch.classList.add("text-green-700");
+    }
+  });
+</script>

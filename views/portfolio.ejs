@@ -1,0 +1,252 @@
+<main class="md:col-span-4 md:ml-56 lg:ml-64 w-full">
+  <div class="max-w-6xl px-5 py-10 mx-auto md:px-auto">
+    <!-- <div class="absolute-center mx-auto"> -->
+
+    <!-- header -->
+
+    <header class="my-4 absolute-center">
+      <span
+        class="text-gray-700 text-3xl font-semibold leading-none tracking-wider"
+        >Hello,</span
+      >
+      <h2
+        class="text-5xl leading-none tracking-wider text-blue-900 select-none"
+      >
+        <%= user.displayName%>.
+      </h2>
+    </header>
+
+    <hr class="border-2 border-gray-700 mb-8" />
+
+    <!-- search box -->
+
+    <div>
+      <%- include('./partials/_search.ejs') %>
+
+      <div class="relative w-full result hidden">
+        <ul
+          id="search-result"
+          class="pt-2 -mt-2 bg-white rounded-full rounded-t-none absolute top-0 left-0 w-full z-50"
+        ></ul>
+      </div>
+
+      <div class="mt-4 grid lg:grid-cols-3 gap-10">
+        <!-- cards go here -->
+
+        <!-- card1 -->
+
+        <div
+          class="card bg-white rounded-lg flex items-center h-20 sm:h-20 w-full object-cover px-5 shadow-2xl"
+        >
+          <div class="flex-shrink-0 w-10 h-10">
+            <img
+              class="w-full h-full text-xs break-words"
+              src="images/graph1.png"
+              alt="total portfolio graph illustration"
+            />
+          </div>
+          <div class="font-bold text-xl xl:text-2xl ml-3">
+            <p class="text-gray-900 whitespace-no-wrap">
+              $ <%= totalPortfolio.toFixed(2)%>
+            </p>
+            <span class="block text-gray-500 text-sm">Total Portfolio</span>
+          </div>
+        </div>
+
+        <!-- card 2 -->
+
+        <div
+          class="card bg-white rounded-lg flex items-center h-20 sm:h-20 w-full object-cover px-5 shadow-2xl"
+        >
+          <div class="flex-shrink-0 w-10 h-10">
+            <img
+              class="w-full h-full text-xs text-xs"
+              src="images/graph2.png"
+              alt="profit and loss graph illustration"
+            />
+          </div>
+          <div class="font-bold text-xl xl:text-2xl ml-3 justify-center">
+            <p id="profitLossValue" class="text-gray-900 whitespace-no-wrap">
+              0
+            </p>
+            <span class="block text-gray-500 text-sm">Profit / Loss</span>
+          </div>
+        </div>
+
+        <!-- card 3 -->
+
+        <div
+          class="card bg-white rounded-lg flex items-center h-20 sm:h-20 w-full object-cover px-5 shadow-2xl"
+        >
+          <div class="flex-shrink-0 w-10 h-10">
+            <img
+              class="w-full h-full text-xs break-words"
+              src="images/graph3.png"
+              alt="balance graph illustration"
+            />
+          </div>
+          <div class="font-bold text-xl xl:text-2xl ml-3">
+            <p class="text-gray-900 whitespace-no-wrap">
+              $ <%= user.balance.toFixed(2)%>
+            </p>
+            <span class="block text-gray-500 text-sm">Balance</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stock status table -->
+    <div class="mt-12">
+      <div class="flex justify-between">
+        <!-- heading of table -->
+        <h2 class="text-lg font-bold leading-tight py-3">Your Stock Status</h2>
+      </div>
+      <% if( StockMessage === '') { %>
+      <table class="table-fixed w-full select-none">
+        <thead>
+          <tr
+            class="bg-gray-100 font-semibold text-gray-600 text-xs uppercase border-b tracking-wider"
+          >
+            <th class="w-1/4 px-4 py-2">Symbol</th>
+            <th class="w-1/4 px-4 py-2">Current</th>
+            <th class="w-1/4 px-4 py-2">Up/Down</th>
+            <th class="w-1/4 px-4 py-2">Stocks</th>
+            <th class="w-1/4 px-4 py-2">Sell</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% user.stock.slice().reverse().forEach( (stock) => { %>
+          <tr class="bg-white border-b text-center">
+            <td class="px-4 py-2 text-center">
+              <a href="/view/<%= stock.companySymbol %> "
+                ><%= stock.companySymbol %></a
+              >
+            </td>
+            <td class="px-4 py-2 text-center">
+              <% currentPrice = Math.floor(stock.stockPrice*(Math.random()+0.7))
+              %> $<%= currentPrice %>
+            </td>
+            <td class="px-4 py-2 text-center">
+              <% let price = currentPrice - stock.stockPrice %> <% profitLoss =
+              + currentPrice - stock.stockPrice %> <% if(price < 0) { %> <%
+              color="red" %>
+              <span
+                >$<%= price.toFixed(2) %><span class="text-red-600 text-lg"
+                  >&#8595;</span
+                ></span
+              >
+              <% } else { %> <% color="green" %>
+              <span
+                >$<%= price.toFixed(2) %><span class="text-green-600 text-lg"
+                  >&#8593;</span
+                ></span
+              >
+              <% } %>
+            </td>
+
+            <td class="px-4 py-2 text-center"><%= stock.noOfStock %></td>
+            <td class="px-4 py-2 text-center">
+              <form action="/transaction/sell" method="POST">
+                <input
+                  hidden
+                  type="text"
+                  name="companySymbol"
+                  value="<%- stock.companySymbol %>"
+                />
+                <button type="submit">
+                  <svg
+                    class="w-6 h-6"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    stroke="green"
+                  >
+                    <path
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                </button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <p class="hidden" id="profitLoss"><%= profitLoss %></p>
+
+      <% } else { %>
+      <p><%= StockMessage %></p>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <%- include('partials/_footer.ejs') %>
+</main>
+
+<!-- script for search bar -->
+
+<script>
+    const inputField = document.getElementById('searchbar')
+    const inputResult = document.getElementById('search-result')
+    const result = document.querySelector('.result')
+
+  document.addEventListener('click', (e)=>{
+    if( document.activeElement === inputField) {
+      result.classList.remove('hidden')
+    } else if(document.activeElement !== inputField){
+      result.classList.add('hidden')
+    }
+  })
+
+  inputField.addEventListener('input', (event) => {
+      inputResult.classList.add('bg-white')
+      const value = event.target.value
+      //sample data
+      const dataset = <%- JSON.stringify(totalData) %>;
+
+      // when symbol matches
+      let data = dataset.filter(function (el) {
+          return el.Symbol.includes(value.toUpperCase())
+      })
+
+      // when no symbol matches
+
+      if (data.length === 0) {
+          let data1 = dataset.filter(function (el) {
+              return (el["Company Name"].toLowerCase().includes(value.toLowerCase()))
+          })
+          data = data1;
+      }
+
+      let list = "";
+      if (value === "") {
+          list = "";
+          data = [];
+      }
+      let n = data.length
+      for (i = 0; i <= (n - 1); i++) {
+          let item = data[i];
+          list += `
+          <a href='/view/${item.Symbol}'>
+          <li class="bg-white p-2 w-full ${(i%2===0) ? 'bg-gray-300' : 'bg-gray-100'}">${item.Symbol}</li>
+          </a>`
+      }
+      if ( n === 0 ){
+        list += `<li class="bg-white p-2 w-full bg-gray-100">No results found</li>`
+      }
+      document.getElementById('search-result').innerHTML = list;
+  })
+
+  let profitLossVal = document.getElementById("profitLoss").innerHTML;
+  function insertProfitValue(profitLossVal) {
+    if (profitLossVal < 0) {
+      document.getElementById("profitLossValue").innerHTML = parseFloat(profitLossVal).toFixed(2) + `<span class="text-red-600 ml-1 text-red-600 font-black text-2xl">&#8595;</span>`;
+    } else {
+      document.getElementById("profitLossValue").innerHTML = parseFloat(profitLossVal).toFixed(2) + `<span class="text-red-600 ml-1 text-green-600 font-black text-2xl">&#8593;</span>`;
+    }
+  }
+  insertProfitValue(profitLossVal)
+</script>
